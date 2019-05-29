@@ -41,22 +41,33 @@ const get_data_many = async () => {
 const put_data = async (id) => {
     let _id = new ObjectID(id)
     return await connect_mongo(async (db) => {
-        let r = await db.collection('users').findOneAndUpdate({ _id: _id },{$set:{firstname : "HE"}})
+        let r = await db.collection('users').findOneAndUpdate({ _id: _id }, { $set: { firstname: "HE" } })
         return r
     })
 }
 
-const post_data = async () => {
+const post_data = async (data) => {
     return await connect_mongo(async (db) => {
-        let r = await db.collection('users').insertOne({firstname:"Hnuy"})
+        console.log(data.test)
+        console.log(data.firstname)
+
+        // let firstname = data.firstname
+        let { test, firstname } = data
+
+        let add = {
+            firstname: firstname,
+            lastname: test
+        }
+
+        let r = await db.collection('users').insertOne(add)
         return r
     })
 }
 
 const delete_data = async (id) => {
     let _id = new ObjectID(id)
-    return await connect_mongo(async (db) =>{
-        let r = await db.collection('users').deleteOne({ _id: _id})
+    return await connect_mongo(async (db) => {
+        let r = await db.collection('users').deleteOne({ _id: _id })
         return r
     })
 }
