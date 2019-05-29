@@ -13,7 +13,6 @@ const connect_mongo = async (callback) => {
     return await callback(client.db(db_mongo))
 }
 
-
 const get_data = async (id) => {
     let _id = new ObjectID(id)
     return await connect_mongo(async (db) => {
@@ -38,25 +37,47 @@ const get_data_many = async () => {
     })
 }
 
-const put_data = async (id) => {
-    let _id = new ObjectID(id)
+const put_data = async (data) => {
     return await connect_mongo(async (db) => {
-        let r = await db.collection('users').findOneAndUpdate({ _id: _id }, { $set: { firstname: "HE" } })
-        return r
+        const filter = {
+            _id: new ObjectID(data._id)
+        }
+        
+        const update = {
+            $set: {
+                firstname: data.firstname,
+                lastname: data.lastname,
+                email: data.email,
+                age: data.age,
+                status: data.status
+            }
+        }
+
+        console.log(update)
+        return await db.collection('users').updateOne(filter, update)
     })
 }
 
 const post_data = async (data) => {
     return await connect_mongo(async (db) => {
-        console.log(data.test)
-        console.log(data.firstname)
-
+        // console.log(data.test)
+        // console.log(data.firstname)
         // let firstname = data.firstname
-        let { test, firstname } = data
+
+        let {
+            firstname,
+            lastname,
+            email,
+            age,
+            status
+        } = data
 
         let add = {
             firstname: firstname,
-            lastname: test
+            lastname: lastname,
+            email: email,
+            age: age,
+            status: status
         }
 
         let r = await db.collection('users').insertOne(add)
@@ -72,11 +93,16 @@ const delete_data = async (id) => {
     })
 }
 
+const find_pleum = async (req, res) => {
+    // let _id = new Object
+    // Business Logic
+}
 
 module.exports = {
     get_data,
     put_data,
     post_data,
     delete_data,
-    get_data_many
+    get_data_many,
+    find_pleum
 }

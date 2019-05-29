@@ -6,10 +6,11 @@ const db = require('./db')
 
 const { check, validationResult } = require('express-validator/check');
 
-
 var bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
+app.get('/pleum', db.find_pleum)
 
 app.get('/test/:id', (req, res) => {
     const id = req.params.id
@@ -38,10 +39,9 @@ app.get('/user', async (req, res) => {
     }
 })
 
-app.put('/user/:id', async (req, res) => {
-    let id = req.params.id
+app.put('/user/', async (req, res) => {
     try {
-        let result = await db.put_data(id)
+        let result = await db.put_data(req.body)
         res.json({ data: result })
     }
     catch (err) {
@@ -60,10 +60,10 @@ app.post('/user', async (req, res) => {
     }
 })
 
-app.delete('/user/:id?', [check('name').exists()], async (req, res) => {
+app.delete('/user/:id?',[check('name').exists()],async (req,res)=>{
     try {
         validationResult(req).throw();
-        let id = req.params.id
+    let id = req.params.id
         let result = await db.delete_data(id)
         res.json({ data: result })
     }
